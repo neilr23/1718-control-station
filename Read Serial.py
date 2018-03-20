@@ -1,3 +1,6 @@
+#3/19/2018 BZ
+#Displays all serial monitor outputs from Arduino onto GUI: Python
+
 import serial
 import time
 from Tkinter import*
