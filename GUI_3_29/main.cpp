@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS //ignore deprecation
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,14 +13,19 @@
 #define MENU_HELP 5
 #define FILE_MENU_EXIT 6
 
+using namespace std;
 using std::cout;
 using std::endl;
 
 /*Portname must contain these backslashes, and remember to
 replace the following com port*/
-char port_name[] = "\\\\.\\COM3";
-HWND TextBox;
-char textSaved[2];
+char port_name[] = "\\\\.\\COM3"; //Temporary initial port
+
+HWND TextBox; //user input for the COM port
+HWND Text; //The Instructions for the textbox (static)
+HWND Current; //The current connected port
+char prefix[] = "Current: "; //we are bad at programming tbh
+string currentPort = "\\\\.\\COM3"; //The port name to be displayed by current
 SerialPort *robot = new SerialPort(port_name);
 
 //String for incoming data
@@ -36,11 +43,12 @@ char szClassName[ ] = "WindowsApp";
 
 //Menus
 void AddMenus(HWND);
+void AddControls(HWND);
 bool ComPrompt = false;
 
 //Communications Functions
 void ComLoop();
-void Connect();
+void Connect(char*);
    
 HMENU hMenu;
 
@@ -85,26 +93,26 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                ComLoop();
                break;
             case FILE_MENU_OPEN:
-            
-               break;
+			{
+				int bufSize = 1024;
+				LPTSTR szText = new TCHAR[bufSize];
+				GetWindowText(TextBox, szText, bufSize);
+				string myString = szText;
+				delete[] szText;
+				char *newCom = new char[myString.length() + 1];
+				strcpy_s(newCom, 2, myString.c_str());
+				//Connect(newCom);
+				delete newCom;
+				SetWindowText(TextBox, "\\\\.\\COM");
+				break;
+			}
             case 3:
-               if(!ComPrompt)
-               {
-                  ShowWindow (GetConsoleWindow(), SW_SHOW);
-                  ComPrompt = true;   
-               }
-               else
-               {
-                  ShowWindow (GetConsoleWindow(), SW_HIDE);
-                  ComPrompt = false;  
-               }
                break;
             case MENU_RESET:
-               system("CLS");
                break;
             case MENU_HELP:
                MessageBox(hWnd, 
-               "TJHSST ROV GUI 2018\n\nFile: Contains Refresh, Open, and Exit\n\tRefresh: Gets latest data from current port\n\tOpen: Opens new specified port\n\tExit: Closes program\nCommand: Opens or closes command prompt\nReset: Clears text in command prompt",
+               "TJHSST ROV GUI 2018\n\nFile: Contains Refresh, Open, and Exit\n\tRefresh: Gets latest data from current port\n\tOpen: Opens new specified port\n\tExit: Closes program\nCommand: Opens or closes communications box\nReset: Clears text in command prompt",
                "Help", MB_OK);
                break;
             case FILE_MENU_EXIT:
@@ -113,10 +121,9 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
          }
          break;
       case WM_CREATE:
-         ShowWindow (GetConsoleWindow(), SW_HIDE);
-         Connect();
+         Connect(port_name);
          AddMenus(hWnd);
-         TextBox = CreateWindow("EDIT", "Input COM Port", WS_BORDER | WS_CHILD | WS_VISIBLE, 10, 10, 400, 20, hWnd, NULL, NULL, NULL);
+		 AddControls(hWnd);
          break;
       case WM_DESTROY:
          PostQuitMessage(0);
@@ -144,7 +151,18 @@ void AddMenus(HWND hWnd)
    SetMenu(hWnd, hMenu); 
 }
 
-void Connect()
+void AddControls(HWND hWnd)
+{
+	Text = CreateWindow("STATIC", "Input COM Port:", WS_VISIBLE | WS_CHILD, 10, 10, 200, 50, hWnd, NULL, NULL, NULL);
+	TextBox = CreateWindowW(L"EDIT", NULL, WS_BORDER | WS_CHILD | WS_VISIBLE, 10, 60, 400, 20, hWnd, NULL, NULL, NULL);
+	Current = CreateWindow("STATIC", NULL, WS_BORDER | WS_CHILD | WS_VISIBLE, 400, 60, 400, 20, hWnd, NULL, NULL, NULL);
+	string tmp = currentPort.substr(7,3);
+	LPSTR out = strcat(prefix , currentPort.c_str());
+	SetWindowText(Current, out);
+	SetWindowText(TextBox, "\\\\.\\COM");
+}
+
+void Connect(char *newCom)
 {
    robot = new SerialPort(port_name);
    if(robot->isConnected()) 
