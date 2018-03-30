@@ -1,0 +1,5 @@
+﻿  SerialPort.cpp
+  main.cpp
+  Generating Code...
+c:\rov\1718-control-station\gui_3_29\main.cpp(127): warning C4715: 'WindowProcedure': not all control paths return a value
+  GUI_3_29.vcxproj -> C:\rov\1718-control-station\GUI_3_29\Debug\GUI_3_29.exe
