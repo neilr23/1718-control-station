@@ -17,11 +17,18 @@ namespace DllCTest
             InitializeComponent();
             clicker = 0;
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-            clicker++;
-            label1.Text = clicker + "";
+
+        }
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void speedNameLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
