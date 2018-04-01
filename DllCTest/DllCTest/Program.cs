@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace DllCTest
 {
-    static class Program
+    class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -14,16 +14,15 @@ namespace DllCTest
         [STAThread]
 
         [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
-            public static extern void ComLoop();
-            public static extern void initialize(string portname);
+            public static extern IntPtr Initialize();
+        [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
+            public static extern int readSerialPort();
+        [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
+            public static extern bool writeSerialPort();
+        [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
+            public static extern bool isConnected();
         static void Main(string[] args)
         {
-            Assembly myAssembly;
-            myAssembly = Assembly.LoadFile("DllTest.cpp");
-
-            object o;
-            Type myType = myAssembly.GetType("<assembly>.<class>");
-            o = Activator.CreateInstance(myType);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
