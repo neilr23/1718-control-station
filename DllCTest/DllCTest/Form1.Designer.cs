@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comBox = new System.Windows.Forms.TextBox();
             this.comNameLabel = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.newPortButton = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,16 +66,17 @@
             this.verticalRecordBtn = new System.Windows.Forms.Button();
             this.horizontalDistanceLabel = new System.Windows.Forms.Label();
             this.verticalDistanceLabel = new System.Windows.Forms.Label();
+            this.clickyBoi = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox1
+            // comBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(91, 587);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(801, 22);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "COM 3";
+            this.comBox.Location = new System.Drawing.Point(91, 587);
+            this.comBox.Name = "comBox";
+            this.comBox.Size = new System.Drawing.Size(801, 22);
+            this.comBox.TabIndex = 2;
+            this.comBox.Text = "COM 3";
             // 
             // comNameLabel
             // 
@@ -86,14 +87,15 @@
             this.comNameLabel.TabIndex = 3;
             this.comNameLabel.Text = "COM Port";
             // 
-            // button2
+            // newPortButton
             // 
-            this.button2.Location = new System.Drawing.Point(898, 583);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(92, 30);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "New Port";
-            this.button2.UseVisualStyleBackColor = true;
+            this.newPortButton.Location = new System.Drawing.Point(898, 583);
+            this.newPortButton.Name = "newPortButton";
+            this.newPortButton.Size = new System.Drawing.Size(92, 30);
+            this.newPortButton.TabIndex = 4;
+            this.newPortButton.Text = "New Port";
+            this.newPortButton.UseVisualStyleBackColor = true;
+            this.newPortButton.Click += new System.EventHandler(this.newPortButton_Click);
             // 
             // toolStrip1
             // 
@@ -123,29 +125,28 @@
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(46, 24);
             this.toolStripDropDownButton1.Text = "File";
             this.toolStripDropDownButton1.ToolTipText = "File";
-            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
             this.refreshToolStripMenuItem.Text = "Refresh";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(178, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(130, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -193,7 +194,6 @@
             this.speedNameLabel.Size = new System.Drawing.Size(49, 17);
             this.speedNameLabel.TabIndex = 7;
             this.speedNameLabel.Text = "Speed";
-            this.speedNameLabel.Click += new System.EventHandler(this.speedNameLabel_Click);
             // 
             // accelNameLabel
             // 
@@ -386,11 +386,22 @@
             this.verticalDistanceLabel.TabIndex = 30;
             this.verticalDistanceLabel.Text = "vertical distance travelled placeholder";
             // 
+            // clickyBoi
+            // 
+            this.clickyBoi.Location = new System.Drawing.Point(721, 77);
+            this.clickyBoi.Name = "clickyBoi";
+            this.clickyBoi.Size = new System.Drawing.Size(171, 158);
+            this.clickyBoi.TabIndex = 32;
+            this.clickyBoi.Text = "Clicky Boi";
+            this.clickyBoi.UseVisualStyleBackColor = true;
+            this.clickyBoi.Click += new System.EventHandler(this.clickyBoi_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1369, 621);
+            this.Controls.Add(this.clickyBoi);
             this.Controls.Add(this.verticalDistanceLabel);
             this.Controls.Add(this.horizontalDistanceLabel);
             this.Controls.Add(this.verticalRecordBtn);
@@ -417,9 +428,9 @@
             this.Controls.Add(this.speedNameLabel);
             this.Controls.Add(this.rpmNameLabel);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.newPortButton);
             this.Controls.Add(this.comNameLabel);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.comBox);
             this.Name = "Form1";
             this.Text = "ROV GUI";
             this.toolStrip1.ResumeLayout(false);
@@ -430,9 +441,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox comBox;
         private System.Windows.Forms.Label comNameLabel;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button newPortButton;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
@@ -467,6 +478,7 @@
         private System.Windows.Forms.Button verticalRecordBtn;
         private System.Windows.Forms.Label horizontalDistanceLabel;
         private System.Windows.Forms.Label verticalDistanceLabel;
+        private System.Windows.Forms.Button clickyBoi;
     }
 }
 

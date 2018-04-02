@@ -14,7 +14,7 @@ namespace DllCTest
         [STAThread]
 
         [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
-            public static extern IntPtr Initialize();
+            public static extern IntPtr makeSerialPort();
         [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
             public static extern int readSerialPort();
         [DllImport("C:\\rov\\1718 - control - station\\DllTest")]
