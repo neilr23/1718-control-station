@@ -69,8 +69,8 @@ namespace DllCTest
         };
         private void T_Tick(object sender, System.EventArgs e)
         {
-            this.BackColor = colors[current++]; //change to rainbows other colors
-            current %= colors.Count; // rainbow does not have infinite color, we should start again somewhere
+            this.BackColor = colors[current++]; 
+            current %= colors.Count; 
         }
     }
 }
