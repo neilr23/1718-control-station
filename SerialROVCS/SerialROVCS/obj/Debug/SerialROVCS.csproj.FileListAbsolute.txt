@@ -1,0 +1,10 @@
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\bin\Debug\SerialROVCS.exe.config
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\bin\Debug\SerialROVCS.exe
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\bin\Debug\SerialROVCS.pdb
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.csprojResolveAssemblyReference.cache
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.Form1.resources
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.Properties.Resources.resources
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.csproj.GenerateResource.cache
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.csproj.CoreCompileInputs.cache
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.exe
+c:\users\bryan zhang\source\repos\SerialROVCS\SerialROVCS\obj\Debug\SerialROVCS.pdb
