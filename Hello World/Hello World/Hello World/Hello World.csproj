@@ -131,6 +131,12 @@
       <Version>6.0.6</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SlimDX, Version=2.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SlimDX SDK (January 2012)\Bin\net20\x86\SlimDX.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
