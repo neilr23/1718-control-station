@@ -29,22 +29,26 @@ namespace ROV_GUI
         private byte[] manipRegisters;
         private String myCom;
         //Controller
-        private RawGameController pilotOneControl;
-        private RawGameController pilotTwoControl;
+        private RawGameController[] controllers;
         private Timer pilotTimer;
         private int buttonCount;
         private int axisCount;
-        private Boolean[] buttonStates;
-        private Double[] axisStates;
-        private Boolean controllersOnline;
-        private int currentController;
+        private Boolean[] buttonOneStates;
+        private Double[] axisOneStates;
+        private Boolean[] buttonTwoStates;
+        private Double[] axisTwoStates;
+        /////////////////////////////////////////////////////////////////////////////Initialize
         public MainPage()
         {
             this.InitializeComponent();
             //Controller
             AutoResetEvent AutoEvent = new AutoResetEvent(true);
-            pilotTimer = new Timer(new TimerCallback(checkStatus), AutoEvent, 0, 1);
-            currentController = 0;
+            pilotTimer = new Timer(new TimerCallback(checkAndSend), AutoEvent, 0, 1); //Timer to do things every fucking millisecond lmaooo
+            controllers = new RawGameController[RawGameController.RawGameControllers.Count];
+            for(int a = 0; a < RawGameController.RawGameControllers.Count; a++)
+            {
+                controllers[a] = RawGameController.RawGameControllers[a];
+            }
             //COMMs
             string selector = SerialDevice.GetDeviceSelector("COM3");
             modbusRegisters = new byte[28];
@@ -53,20 +57,30 @@ namespace ROV_GUI
             Task t = Initialise(9600);
             t.Start();
         }
+        /////////////////////////////////////////////////////////////////////////////GUI interactions
         private void HorizontalButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void checkStatus(object state)
-        {
-            if (controllersOnline)
-            {
-                SendBytes(modbusRegisters, manipRegisters); 
-            }
-        }
+
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             myCom = "COM " + Slider.ValueProperty;
+        }
+        /////////////////////////////////////////////////////////////////////////////Backend
+        private void checkAndSend(object state)//We send things here
+        {
+                string deploy = "";
+                controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
+                controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
+                for(int a = 0; a < buttonOneStates.Length; a++)
+                {
+                    deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
+                }
+                PilotOne.Text = deploy;
+                //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
+                //See the arduino code for explanations of what each place in modbusRegisters represents. 
+            SendBytes(modbusRegisters, manipRegisters);
         }
 
         public async Task Initialise(uint BaudRate)     //NOTE - THIS IS AN ASYNC METHOD!
