@@ -57,6 +57,10 @@ namespace Hello_World
         {
 
         }
+        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+
+        }
         private void HippityHoppityYoureMyProperty(object sender, RoutedEventArgs e)
         {
             PilotOne.Text = myKey;
