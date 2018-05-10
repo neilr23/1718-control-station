@@ -23,10 +23,25 @@ namespace Hello_World
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private String myKey;
         public MainPage()
         {
             this.InitializeComponent();
+            myKey = "";
+        };
+
+        private void HorizontalButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
-        bool MouseClicked = false;
+        private void TippityTappityYoureMyProperty(object sender, RoutedEventArgs e)
+        {
+            PilotOne.Text = myKey;
+        }
+        void Address_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            myKey = e.Key + "";
+            TippityTappityYoureMyProperty(this, new RoutedEventArgs());
+        }
     }
 }

@@ -16,19 +16,19 @@
             <CommandBar.Content>
                 <Grid/>
             </CommandBar.Content>
-            <AppBarButton Icon="OpenFile" Label="Open"/>
-            <AppBarButton Icon="Library" Label="Commands"/>
-            <AppBarButton Icon="Refresh" Label="Reset"/>
-            <AppBarButton Icon="Help" Label="Help"/>
+            <AppBarButton Name="openButton" Icon="OpenFile" Label="Open"/>
+            <AppBarButton Name="commandButton" Icon="Library" Label="Commands"/>
+            <AppBarButton Name="resetButton" Icon="Refresh" Label="Reset"/>
+            <AppBarButton Name="helpButton" Icon="Help" Label="Help"/>
         </CommandBar>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HORIZONTAL DISTANCE" VerticalAlignment="Top" Margin="10,53,0,0"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,163,0,0" TextWrapping="Wrap" Text="VERTICAL DISTANCE " VerticalAlignment="Top"/>
-        <Button Content="Record" HorizontalAlignment="Left" Margin="7,78,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
-        <Button Content="Record" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
+        <Button Name="HorizontalButton" Content="Record" HorizontalAlignment="Left" Margin="7,78,0,0" VerticalAlignment="Top" Height="80" Width="80" Click="HorizontalButton_Click"/>
+        <Button Name="VerticalButton" Content="Record" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
         <TextBlock HorizontalAlignment="Left" Margin="162,108,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="162,213,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
-        <TextBox HorizontalAlignment="Left" Margin="10,275,0,0" TextWrapping="Wrap" Text="Pilot One Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,482,0,0" TextWrapping="Wrap" Text="Pilot Two Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
+        <TextBlock Name="PilotOne" HorizontalAlignment="Left" Margin="10,275,0,0" TextWrapping="Wrap" Text="Pilot One Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
+        <TextBlock Name="PilotTwo" HorizontalAlignment="Left" Margin="10,482,0,0" TextWrapping="Wrap" Text="Pilot Two Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
         <TextBlock HorizontalAlignment="Left" Margin="18,691,0,0" TextWrapping="Wrap" Text="COM Port" VerticalAlignment="Top"/>
         <Image HorizontalAlignment="Left" Height="185" Margin="700,62,0,0" VerticalAlignment="Top" Width="258"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,280,0,0" TextWrapping="Wrap" Text="Voltage" VerticalAlignment="Top"/>
@@ -44,16 +44,19 @@
         <TextBlock HorizontalAlignment="Left" Margin="459,433,0,0" TextWrapping="Wrap" Text="Motor RPM 4" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,466,0,0" TextWrapping="Wrap" Text="Motor RPM 5" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,506,0,0" TextWrapping="Wrap" Text="Motor RPM 6" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,318,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,358,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,400,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,437,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,470,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,506,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm1Label" HorizontalAlignment="Left" Margin="700,318,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm2Label" HorizontalAlignment="Left" Margin="700,358,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm3Label" HorizontalAlignment="Left" Margin="700,400,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm4Label" HorizontalAlignment="Left" Margin="700,437,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm5Label" HorizontalAlignment="Left" Margin="700,470,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="rpm6Label" HorizontalAlignment="Left" Margin="700,506,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock HorizontalAlignment="Left" Margin="700,247,0,0" TextWrapping="Wrap" Text="Attempt" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,619,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBlock HorizontalAlignment="Left" Margin="700,654,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="mani1Label" HorizontalAlignment="Left" Margin="700,619,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="mani2Label" HorizontalAlignment="Left" Margin="700,654,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,243,0,0" TextWrapping="Wrap" Text="Data" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBox HorizontalAlignment="Left" Margin="108,691,0,0" TextWrapping="Wrap" Text="COM 3&#xD;&#xA;" VerticalAlignment="Top" Width="761" Height="33" IsReadOnly="False"/>
+        <TextBlock Name="voltageLabel" HorizontalAlignment="Left" Margin="700,284,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="accelLabel" HorizontalAlignment="Left" Margin="700,581,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
+        <TextBlock Name="speedLabel" HorizontalAlignment="Left" Margin="700,543,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
     </Grid>
 </Page>
