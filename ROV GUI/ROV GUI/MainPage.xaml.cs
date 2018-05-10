@@ -20,11 +20,15 @@ namespace ROV_GUI
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        //COMMs
         private SerialDevice UartPort;
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject;
         private CancellationTokenSource ReadCancellationTokenSource;
-        private String myKey;
+        private byte[] modbusRegisters;
+        private byte[] manipRegisters;
+        private String myCom;
+        //Controller
         private RawGameController pilotOneControl;
         private RawGameController pilotTwoControl;
         private Timer pilotTimer;
@@ -37,37 +41,32 @@ namespace ROV_GUI
         public MainPage()
         {
             this.InitializeComponent();
-            myKey = "";
+            //Controller
             AutoResetEvent AutoEvent = new AutoResetEvent(true);
             pilotTimer = new Timer(new TimerCallback(checkStatus), AutoEvent, 0, 1);
             currentController = 0;
-
+            //COMMs
             string selector = SerialDevice.GetDeviceSelector("COM3");
+            modbusRegisters = new byte[28];
+            manipRegisters = new byte[4];
+            myCom = "";
+            Task t = Initialise(9600);
+            t.Start();
         }
         private void HorizontalButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void HippityHoppityYoureMyProperty(object sender, RoutedEventArgs e)
-        {
-            PilotOne.Text = myKey;
-        }
-        void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            myKey = e.Key + "";
-            HippityHoppityYoureMyProperty(this, new RoutedEventArgs());
-        }
         private void checkStatus(object state)
         {
             if (controllersOnline)
             {
-
+                SendBytes(modbusRegisters, manipRegisters); 
             }
         }
-
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-
+            myCom = "COM " + Slider.ValueProperty;
         }
 
         public async Task Initialise(uint BaudRate)     //NOTE - THIS IS AN ASYNC METHOD!
@@ -160,12 +159,13 @@ namespace ROV_GUI
             }
         }
 
-        public async void SendBytes(byte[] TxData)
+        public async void SendBytes(byte[] TxData, byte[] TxData2)
         {
             try
             {
                 //Send data to UART
                 DataWriterObject.WriteBytes(TxData);
+                DataWriterObject.WriteBytes(TxData2);
                 await DataWriterObject.StoreAsync();
             }
             catch (Exception ex)
