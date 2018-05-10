@@ -24,13 +24,12 @@
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HORIZONTAL DISTANCE" VerticalAlignment="Top" Margin="10,53,0,0"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,163,0,0" TextWrapping="Wrap" Text="VERTICAL DISTANCE " VerticalAlignment="Top"/>
         <Button Name="HorizontalButton" Content="Record" HorizontalAlignment="Left" Margin="7,78,0,0" VerticalAlignment="Top" Height="80" Width="80" Click="HorizontalButton_Click"/>
-        <Button Name="VerticalButton" Content="Record" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
+        <Button Name="VerticalButton" Content="Record" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="80" Width="80" Click="VerticalButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="162,108,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="162,213,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
-        <TextBlock Name="PilotOne" HorizontalAlignment="Left" Margin="10,275,0,0" TextWrapping="Wrap" Text="Pilot One Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
-        <TextBlock Name="PilotTwo" HorizontalAlignment="Left" Margin="10,482,0,0" TextWrapping="Wrap" Text="Pilot Two Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
+        <TextBlock Name="PilotOne" HorizontalAlignment="Left" Margin="10,275,0,0" TextWrapping="Wrap" Text="Pilot One Controller Diagram" VerticalAlignment="Top" Height="192" Width="420"/>
+        <TextBlock Name="PilotTwo" HorizontalAlignment="Left" Margin="10,482,0,0" TextWrapping="Wrap" Text="Pilot Two Controller Diagram" VerticalAlignment="Top" Height="192" Width="420"/>
         <TextBlock HorizontalAlignment="Left" Margin="18,691,0,0" TextWrapping="Wrap" Text="COM Port" VerticalAlignment="Top"/>
-        <Image HorizontalAlignment="Left" Height="185" Margin="700,62,0,0" VerticalAlignment="Top" Width="258"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,280,0,0" TextWrapping="Wrap" Text="Voltage" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,318,0,0" TextWrapping="Wrap" Text="Motor RPM 1" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,543,0,0" TextWrapping="Wrap" Text="Speed" VerticalAlignment="Top"/>
@@ -57,6 +56,15 @@
         <TextBlock Name="voltageLabel" HorizontalAlignment="Left" Margin="700,284,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock Name="accelLabel" HorizontalAlignment="Left" Margin="700,581,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock Name="speedLabel" HorizontalAlignment="Left" Margin="700,543,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <Slider HorizontalAlignment="Left" Margin="108,684,0,0" VerticalAlignment="Top" Width="407" ValueChanged="Slider_ValueChanged" Height="40"/>
+        <Slider x:Name="comSlider" HorizontalAlignment="Left" Margin="108,684,0,0" VerticalAlignment="Top" Width="407" ValueChanged="Slider_ValueChanged" Height="40" Maximum="10"/>
+        <TextBlock HorizontalAlignment="Left" Margin="441,92,0,0" TextWrapping="Wrap" Text="Connection Status:" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="459,135,0,0" TextWrapping="Wrap" Text="Connected:" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="459,167,0,0" TextWrapping="Wrap" Text="COM Port:" VerticalAlignment="Top" />
+        <TextBlock x:Name="connectionStatus" HorizontalAlignment="Left" Margin="558,135,0,0" TextWrapping="Wrap" Text="False" VerticalAlignment="Top" />
+        <TextBlock x:Name="comPortId" HorizontalAlignment="Left" Margin="558,167,0,0" TextWrapping="Wrap" Text="N/A" VerticalAlignment="Top" />
+        <Image x:Name="ConnectedImg" HorizontalAlignment="Left" Height="95" Margin="700,102,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
+        <Image x:Name="Controller1Img" HorizontalAlignment="Left" Height="95" Margin="131,345,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
+        <Image x:Name="Controller2Img" HorizontalAlignment="Left" Height="95" Margin="131,543,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
+        <Button x:Name="ConnectButton" Content="Connect" HorizontalAlignment="Left" Margin="610,92,0,0" VerticalAlignment="Top" Click="ConnectButton_Click"/>
     </Grid>
 </Page>

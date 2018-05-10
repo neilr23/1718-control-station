@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Windows.Storage.Streams;
 using Windows.Gaming.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
+using Windows.UI.Core;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -20,6 +22,8 @@ namespace ROV_GUI
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        //GUI
+        private Timer updateTimer;
         //COMMs
         private SerialDevice UartPort;
         private DataReader DataReaderObject = null;
@@ -27,10 +31,15 @@ namespace ROV_GUI
         private CancellationTokenSource ReadCancellationTokenSource;
         private byte[] modbusRegisters;
         private byte[] manipRegisters;
-        private String myCom;
+        private String myCom = "COM0";
+        private uint baudRate = 250000;
+        private Boolean connected;
+        private Boolean helperC;
         //Controller
         private RawGameController[] controllers;
         private Timer pilotTimer;
+        private Boolean controller1;
+        private Boolean controller2;
         private int buttonCount;
         private int axisCount;
         private Boolean[] buttonOneStates;
@@ -43,51 +52,121 @@ namespace ROV_GUI
             this.InitializeComponent();
             //Controller
             AutoResetEvent AutoEvent = new AutoResetEvent(true);
-            pilotTimer = new Timer(new TimerCallback(checkAndSend), AutoEvent, 0, 1); //Timer to do things every fucking millisecond lmaooo
             controllers = new RawGameController[RawGameController.RawGameControllers.Count];
-            for(int a = 0; a < RawGameController.RawGameControllers.Count; a++)
+            for (int a = 0; a < RawGameController.RawGameControllers.Count; a++)
             {
                 controllers[a] = RawGameController.RawGameControllers[a];
             }
+            pilotTimer = new Timer(new TimerCallback(checkAndSend), AutoEvent, 0, 1); //Timer to do things every fucking millisecond lmaooo
+            updateTimer = new Timer(new TimerCallback(UpdateGUI), AutoEvent, 0, 1);
             //COMMs
-            string selector = SerialDevice.GetDeviceSelector("COM3");
             modbusRegisters = new byte[28];
             manipRegisters = new byte[4];
-            myCom = "";
-            Task t = Initialise(9600);
-            t.Start();
+            Initialize(baudRate, myCom);
         }
         /////////////////////////////////////////////////////////////////////////////GUI interactions
+        private void UpdateGUI(object state)
+        {
+            if (connected != helperC)
+            {
+                if (connected)
+                {
+                    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        UpdatePrivateValues();
+                        ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/connection.png"));
+                        Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                        Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                        connectionStatus.Text = "True";
+                        comPortId.Text = myCom;
+                        voltageLabel.Text = "Failure";
+                        rpm1Label.Text = "Failure";
+                        rpm2Label.Text = "Failure";
+                        rpm3Label.Text = "Failure";
+                        rpm4Label.Text = "Failure";
+                        rpm5Label.Text = "Failure";
+                        rpm6Label.Text = "Failure";
+                        speedLabel.Text = "Failure";
+                        accelLabel.Text = "Failure";
+                        mani1Label.Text = "Failure";
+                        mani2Label.Text = "Failure";
+                    });
+                    helperC = connected;
+                }
+                else
+                {
+                    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                     {
+                         ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         connectionStatus.Text = "False";
+                         comPortId.Text = "N/A";
+                         voltageLabel.Text = "Failure";
+                         rpm1Label.Text = "Failure";
+                         rpm2Label.Text = "Failure";
+                         rpm3Label.Text = "Failure";
+                         rpm4Label.Text = "Failure";
+                         rpm5Label.Text = "Failure";
+                         rpm6Label.Text = "Failure";
+                         speedLabel.Text = "Failure";
+                         accelLabel.Text = "Failure";
+                         mani1Label.Text = "Failure";
+                         mani2Label.Text = "Failure";
+                     });
+                    helperC = connected;
+                }
+            }
+        }
+
+        private void UpdatePrivateValues()
+        {
+            myCom = "COM" + comSlider.Value;
+        }
+
         private void HorizontalButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void VerticalButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            myCom = "COM " + Slider.ValueProperty;
+            Slider slider = sender as Slider;
+            if (slider != null)
+            {
+                myCom = "COM" + slider.Value;
+            }
         }
         /////////////////////////////////////////////////////////////////////////////Backend
         private void checkAndSend(object state)//We send things here
         {
-                string deploy = "";
+            string deploy = "";
+            if (controllers.Length != 0)
+            {
                 controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
                 controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
-                for(int a = 0; a < buttonOneStates.Length; a++)
+
+                for (int a = 0; a < buttonOneStates.Length; a++)
                 {
                     deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
                 }
                 PilotOne.Text = deploy;
                 //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
                 //See the arduino code for explanations of what each place in modbusRegisters represents. 
-            SendBytes(modbusRegisters, manipRegisters);
+                SendBytes(modbusRegisters, manipRegisters);
+            }
         }
 
-        public async Task Initialise(uint BaudRate)     //NOTE - THIS IS AN ASYNC METHOD!
+        public async Task Initialize(uint BaudRate, String myCom)     //NOTE - THIS IS AN ASYNC METHOD!
         {
             try
             {
-                string aqs = SerialDevice.GetDeviceSelector("UART0");
+                string aqs = SerialDevice.GetDeviceSelector(myCom);
                 var dis = await DeviceInformation.FindAllAsync(aqs);
                 UartPort = await SerialDevice.FromIdAsync(dis[0].Id);
 
@@ -103,11 +182,21 @@ namespace ROV_GUI
                 DataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
                 DataWriterObject = new DataWriter(UartPort.OutputStream);
 
+                connected = true;
+
                 StartReceive();
             }
             catch (Exception ex)
             {
-                throw new Exception("Uart Initialise Error", ex);
+                connected = false;
+                ContentDialog failedtoConnectDialog = new ContentDialog
+                {
+                    Title = "Failed to Connect",
+                    Content = ex.ToString(),
+                    CloseButtonText = "Ok"
+                };
+
+                ContentDialogResult result = await failedtoConnectDialog.ShowAsync();
             }
         }
 
@@ -184,8 +273,21 @@ namespace ROV_GUI
             }
             catch (Exception ex)
             {
-                throw new Exception("Uart Tx Error", ex);
+                connected = false;
+                ContentDialog failedtoSendDialog = new ContentDialog
+                {
+                    Title = "Failed to Send Data",
+                    Content = ex.ToString(),
+                    CloseButtonText = "Ok"
+                };
+
+                ContentDialogResult result = await failedtoSendDialog.ShowAsync();
             }
+        }
+
+        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            Initialize(baudRate, myCom);
         }
     }
 }
