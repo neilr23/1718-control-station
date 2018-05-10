@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
 using Windows.Devices.Enumeration;
 using Windows.Storage.Streams;
+using Windows.Gaming.Input;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -21,11 +24,45 @@ namespace ROV_GUI
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject;
         private CancellationTokenSource ReadCancellationTokenSource;
-
+        private String myKey;
+        private RawGameController pilotOneControl;
+        private RawGameController pilotTwoControl;
+        private Timer pilotTimer;
+        private int buttonCount;
+        private int axisCount;
+        private Boolean[] buttonStates;
+        private Double[] axisStates;
+        private Boolean controllersOnline;
+        private int currentController;
         public MainPage()
         {
             this.InitializeComponent();
+            myKey = "";
+            AutoResetEvent AutoEvent = new AutoResetEvent(true);
+            pilotTimer = new Timer(new TimerCallback(checkStatus), AutoEvent, 0, 1);
+            currentController = 0;
+
             string selector = SerialDevice.GetDeviceSelector("COM3");
+        }
+        private void HorizontalButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void HippityHoppityYoureMyProperty(object sender, RoutedEventArgs e)
+        {
+            PilotOne.Text = myKey;
+        }
+        void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            myKey = e.Key + "";
+            HippityHoppityYoureMyProperty(this, new RoutedEventArgs());
+        }
+        private void checkStatus(object state)
+        {
+            if (controllersOnline)
+            {
+
+            }
         }
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
