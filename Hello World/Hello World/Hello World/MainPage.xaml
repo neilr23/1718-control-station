@@ -16,7 +16,7 @@
             <CommandBar.Content>
                 <Grid/>
             </CommandBar.Content>
-            <AppBarButton Icon="OpenFile" Label="Open" Click="AppBarButton_Click"/>
+            <AppBarButton Icon="OpenFile" Label="Open"/>
             <AppBarButton Icon="Library" Label="Commands"/>
             <AppBarButton Icon="Refresh" Label="Reset"/>
             <AppBarButton Icon="Help" Label="Help"/>
@@ -25,8 +25,8 @@
         <TextBlock HorizontalAlignment="Left" Margin="10,163,0,0" TextWrapping="Wrap" Text="VERTICAL DISTANCE " VerticalAlignment="Top"/>
         <Button Content="Record" HorizontalAlignment="Left" Margin="7,78,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
         <Button Content="Record" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="80" Width="80"/>
-        <TextBlock HorizontalAlignment="Left" Margin="162,108,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" SelectionChanged="TextBlock_SelectionChanged"/>
-        <TextBlock HorizontalAlignment="Left" Margin="162,213,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" SelectionChanged="TextBlock_SelectionChanged"/>
+        <TextBlock HorizontalAlignment="Left" Margin="162,108,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="162,213,0,0" TextWrapping="Wrap" Text="0.0m" VerticalAlignment="Top" />
         <TextBox HorizontalAlignment="Left" Margin="10,275,0,0" TextWrapping="Wrap" Text="Pilot One Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
         <TextBox HorizontalAlignment="Left" Margin="10,482,0,0" TextWrapping="Wrap" Text="Pilot Two Controller Diagram Placeholder" VerticalAlignment="Top" Height="192" Width="420"/>
         <TextBlock HorizontalAlignment="Left" Margin="18,691,0,0" TextWrapping="Wrap" Text="COM Port" VerticalAlignment="Top"/>
@@ -37,8 +37,8 @@
         <TextBlock HorizontalAlignment="Left" Margin="459,581,0,0" TextWrapping="Wrap" Text="Acceleration" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,619,0,0" TextWrapping="Wrap" Text="Manipulator 1" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,654,0,0" TextWrapping="Wrap" Text="Manipulator 2" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="18,728,0,0" TextWrapping="Wrap" Text="Baud Speed" VerticalAlignment="Top" Grid.RowSpan="2" SelectionChanged="TextBlock_SelectionChanged_1"/>
-        <TextBox HorizontalAlignment="Left" Margin="108,729,0,0" TextWrapping="Wrap" Text="9600" VerticalAlignment="Top" Width="761" Grid.RowSpan="2" TextChanged="TextBox_TextChanged_1" IsReadOnly="False"/>
+        <TextBlock HorizontalAlignment="Left" Margin="18,728,0,0" TextWrapping="Wrap" Text="Baud Speed" VerticalAlignment="Top" Grid.RowSpan="2"/>
+        <TextBox HorizontalAlignment="Left" Margin="108,729,0,0" TextWrapping="Wrap" Text="9600" VerticalAlignment="Top" Width="761" Grid.RowSpan="2" IsReadOnly="False"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,358,0,0" TextWrapping="Wrap" Text="Motor RPM 2" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,396,0,0" TextWrapping="Wrap" Text="Motor RPM 3" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,433,0,0" TextWrapping="Wrap" Text="Motor RPM 4" VerticalAlignment="Top"/>
@@ -54,6 +54,6 @@
         <TextBlock HorizontalAlignment="Left" Margin="700,619,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock HorizontalAlignment="Left" Margin="700,654,0,0" TextWrapping="Wrap" Text="Failure" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,243,0,0" TextWrapping="Wrap" Text="Data" VerticalAlignment="Top" RenderTransformOrigin="0.131,0.301"/>
-        <TextBox HorizontalAlignment="Left" Margin="108,691,0,0" TextWrapping="Wrap" Text="COM 3&#xD;&#xA;" VerticalAlignment="Top" Width="761" Height="33" TextChanged="TextBox_TextChanged" IsReadOnly="False"/>
+        <TextBox HorizontalAlignment="Left" Margin="108,691,0,0" TextWrapping="Wrap" Text="COM 3&#xD;&#xA;" VerticalAlignment="Top" Width="761" Height="33" IsReadOnly="False"/>
     </Grid>
 </Page>
