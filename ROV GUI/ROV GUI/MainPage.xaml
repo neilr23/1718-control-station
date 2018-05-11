@@ -37,7 +37,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="459,619,0,0" TextWrapping="Wrap" Text="Manipulator 1" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,654,0,0" TextWrapping="Wrap" Text="Manipulator 2" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="18,728,0,0" TextWrapping="Wrap" Text="Baud Speed" VerticalAlignment="Top" Grid.RowSpan="2"/>
-        <TextBox x:Name="baudInput" HorizontalAlignment="Left" Margin="108,729,0,0" TextWrapping="Wrap" Text="9600" VerticalAlignment="Top" Width="761" Grid.RowSpan="2" IsReadOnly="False"/>
+        <TextBox Name="baudInput" HorizontalAlignment="Left" Margin="108,729,0,0" TextWrapping="Wrap" Text="9600" VerticalAlignment="Top" Width="761" Grid.RowSpan="2" IsReadOnly="False"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,358,0,0" TextWrapping="Wrap" Text="Motor RPM 2" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,396,0,0" TextWrapping="Wrap" Text="Motor RPM 3" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,433,0,0" TextWrapping="Wrap" Text="Motor RPM 4" VerticalAlignment="Top"/>
@@ -68,5 +68,6 @@
         <Button x:Name="ConnectButton" Content="Connect" HorizontalAlignment="Left" Margin="610,92,0,0" VerticalAlignment="Top" Click="ConnectButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="459,197,0,0" TextWrapping="Wrap" Text="Baud Speed:" VerticalAlignment="Top" />
         <TextBlock x:Name="baudSpeedId" HorizontalAlignment="Left" Margin="558,197,0,0" TextWrapping="Wrap" Text="N/A" VerticalAlignment="Top"/>
+        <TextBlock Name="ConnectedControllers" HorizontalAlignment="Left" Margin="436,64,0,-84" Grid.RowSpan="2" Text="Connected- " TextWrapping="Wrap" VerticalAlignment="Top"/>
     </Grid>
 </Page>

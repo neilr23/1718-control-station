@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Imaging;
 using System;
 using System.Threading;
+using System.Collections;
 using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
 using Windows.Devices.Enumeration;
@@ -11,6 +12,8 @@ using Windows.Gaming.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
+using System.Collections.Generic; 
+
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -65,7 +68,7 @@ namespace ROV_GUI
             baudInput.Text = "" + baudRate;
             //Controller
             AutoResetEvent AutoEvent = new AutoResetEvent(true);
-            controllers = new RawGameController[RawGameController.RawGameControllers.Count];
+            controllers = new RawGameController[2];
             for (int a = 0; a < RawGameController.RawGameControllers.Count; a++)
             {
                 controllers[a] = RawGameController.RawGameControllers[a];
@@ -75,6 +78,7 @@ namespace ROV_GUI
             //COMMs
             modbusRegisters = new byte[28];
             manipRegisters = new byte[4];
+            ConnectedControllers.Text = RawGameController.RawGameControllers + "";
             Initialize(baudRate, myCom);
         }
         /////////////////////////////////////////////////////////////////////////////GUI interactions
@@ -155,7 +159,11 @@ namespace ROV_GUI
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 myCom = "COM" + comSlider.Value;
-                baudRate = UInt32.Parse(baudInput.Text);
+                if(!baudInput.Text.Equals(""))
+                {
+                    baudRate = UInt32.Parse(baudInput.Text);
+                }
+                //Needs error exception TwT
             });
         }
 
@@ -178,27 +186,144 @@ namespace ROV_GUI
             }
         }
         /////////////////////////////////////////////////////////////////////////////Backend
-        public event EventHandler<RawGameController> RawGameControllerAdded; 
-
-        private void checkAndSend(object state)//We send things here
+        //public event EventHandler<RawGameController> RawGameControllerAdded;
+        static void RawGameControllerAdded(object sender, RawGameController args)
+        {
+            RawGameControllers.Add(args);
+        }
+        public static ArrayList RawGameControllers{ get; set; }
+        
+        async private void checkAndSend(object state)//We send things here
         {
             string deploy = "";
-            if (controllers.Length != 0)
+            try
             {
-                controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
-                controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
-
-                for (int a = 0; a < buttonOneStates.Length; a++)
+                if (!(RawGameControllers.Count == 0))
                 {
-                    deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
+                    controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
+                    controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
+
+                    for (int a = 0; a < buttonOneStates.Length; a++)
+                    {
+                        deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
+                    }
+                    PilotOne.Text = deploy;
+                    if (buttonOneStates[0])
+                    {
+                        //cyka blyAT
+                    }
+                    else if (buttonOneStates[1])
+                    {
+
+                    }
+                    else if (buttonOneStates[2])
+                    {
+
+                    }
+                    else if (buttonOneStates[3])
+                    {
+
+                    }
+                    else if (buttonOneStates[4])
+                    {
+
+                    }
+                    else if (buttonOneStates[5])
+                    {
+
+                    }
+                    else if (buttonOneStates[6])
+                    {
+
+                    }
+                    else if (buttonOneStates[7])
+                    {
+
+                    }
+                    else if (buttonOneStates[8])
+                    {
+
+                    }
+                    else if (buttonOneStates[9])
+                    {
+
+                    }
+                    else if (buttonOneStates[10])
+                    {
+
+                    }
+                    else if (buttonOneStates[11])
+                    {
+
+                    }
+                    if (buttonTwoStates[0])
+                    {
+
+                    }
+                    else if (buttonTwoStates[1])
+                    {
+
+                    }
+                    else if (buttonTwoStates[2])
+                    {
+
+                    }
+                    else if (buttonTwoStates[3])
+                    {
+
+                    }
+                    else if (buttonTwoStates[4])
+                    {
+
+                    }
+                    else if (buttonTwoStates[5])
+                    {
+
+                    }
+                    else if (buttonTwoStates[6])
+                    {
+
+                    }
+                    else if (buttonTwoStates[7])
+                    {
+
+                    }
+                    else if (buttonTwoStates[8])
+                    {
+
+                    }
+                    else if (buttonTwoStates[9])
+                    {
+
+                    }
+                    else if (buttonTwoStates[10])
+                    {
+
+                    }
+                    else if (buttonTwoStates[11])
+                    {
+
+                    }
+                    //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
+                    //See the arduino code for explanations of what each place in modbusRegisters represents. 
+                    SendBytes(modbusRegisters, manipRegisters);
                 }
-                PilotOne.Text = deploy;
-                //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
-                //See the arduino code for explanations of what each place in modbusRegisters represents. 
-                SendBytes(modbusRegisters, manipRegisters);
+            }
+            catch (Exception ex)
+            {
+                connected = false;
+                ContentDialog failedtoConnectDialog = new ContentDialog
+                {
+                    Title = "Failed to Connect",
+                    Content = ex.ToString(),
+                    CloseButtonText = "Ok"
+                };
+
+                //ContentDialogResult result = await failedtoConnectDialog.ShowAsync();*/
             }
         }
 
+        
         public async Task Initialize(uint BaudRate, String myCom)     //NOTE - THIS IS AN ASYNC METHOD!
         {
             try
