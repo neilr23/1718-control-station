@@ -12,7 +12,7 @@ using Windows.Gaming.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 
 
 
@@ -158,10 +158,20 @@ namespace ROV_GUI
         {
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                int num;
                 myCom = "COM" + comSlider.Value;
-                if(!baudInput.Text.Equals(""))
+                if(int.TryParse(baudInput.Text, out num))
                 {
                     baudRate = UInt32.Parse(baudInput.Text);
+                }
+                else
+                {
+                    ContentDialog failedtoParseDialog = new ContentDialog
+                    {
+                        Title = "Failed to Parse Baud Rate",
+                        Content = baudInput.Text + " is not a number",
+                        CloseButtonText = "Ok"
+                    };
                 }
                 //Needs error exception TwT
             });
@@ -311,7 +321,7 @@ namespace ROV_GUI
             }
             catch (Exception ex)
             {
-                connected = false;
+                /*connected = false;
                 ContentDialog failedtoConnectDialog = new ContentDialog
                 {
                     Title = "Failed to Connect",
