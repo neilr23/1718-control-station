@@ -321,15 +321,15 @@ namespace ROV_GUI
             }
             catch (Exception ex)
             {
-                /*connected = false;
-                ContentDialog failedtoConnectDialog = new ContentDialog
+                connected = false;
+                ContentDialog failedtoConnectControllersDialog = new ContentDialog
                 {
-                    Title = "Failed to Connect",
+                    Title = "Boi where are the controllers?",
                     Content = ex.ToString(),
-                    CloseButtonText = "Ok"
+                    CloseButtonText = "OH SUGAR"
                 };
 
-                //ContentDialogResult result = await failedtoConnectDialog.ShowAsync();*/
+                ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();
             }
         }
 
