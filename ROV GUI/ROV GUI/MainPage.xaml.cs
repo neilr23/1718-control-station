@@ -143,6 +143,8 @@ namespace ROV_GUI
             }
         }
         /////////////////////////////////////////////////////////////////////////////Backend
+        public event EventHandler<RawGameController> RawGameControllerAdded; 
+
         private void checkAndSend(object state)//We send things here
         {
             string deploy = "";
