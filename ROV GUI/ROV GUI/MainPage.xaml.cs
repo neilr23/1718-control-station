@@ -20,10 +20,22 @@ namespace ROV_GUI
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     public sealed partial class MainPage : Page
     {
         //GUI
         private Timer updateTimer;
+        private double voltage;
+        private double motorRPM1;
+        private double motorRPM2;
+        private double motorRPM3;
+        private double motorRPM4;
+        private double motorRPM5;
+        private double motorRPM6;
+        private double speedV;
+        private double accelerationV;
+        private double manipulator1;
+        private double manipulator2;
         //COMMs
         private SerialDevice UartPort;
         private DataReader DataReaderObject = null;
@@ -50,6 +62,7 @@ namespace ROV_GUI
         public MainPage()
         {
             this.InitializeComponent();
+            baudInput.Text = "" + baudRate;
             //Controller
             AutoResetEvent AutoEvent = new AutoResetEvent(true);
             controllers = new RawGameController[RawGameController.RawGameControllers.Count];
@@ -67,41 +80,59 @@ namespace ROV_GUI
         /////////////////////////////////////////////////////////////////////////////GUI interactions
         private void UpdateGUI(object state)
         {
+            UpdatePrivateValues();
             if (connected != helperC)
             {
                 if (connected)
                 {
                     Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        UpdatePrivateValues();
-                        ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/connection.png"));
-                        Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
-                        Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
-                        connectionStatus.Text = "True";
-                        comPortId.Text = myCom;
-                        voltageLabel.Text = "Failure";
-                        rpm1Label.Text = "Failure";
-                        rpm2Label.Text = "Failure";
-                        rpm3Label.Text = "Failure";
-                        rpm4Label.Text = "Failure";
-                        rpm5Label.Text = "Failure";
-                        rpm6Label.Text = "Failure";
-                        speedLabel.Text = "Failure";
-                        accelLabel.Text = "Failure";
-                        mani1Label.Text = "Failure";
-                        mani2Label.Text = "Failure";
-                    });
+                     {
+                         comSlider.IsEnabled = false;
+                         baudInput.IsEnabled = false;
+                         ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/connection.png"));
+                         if (controller1)
+                             Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                         else
+                             Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         if (controller2)
+                             Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                         else
+                             Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         connectionStatus.Text = "True";
+                         comPortId.Text = myCom;
+                         baudSpeedId.Text = ""+baudRate;
+                         voltageLabel.Text = "Failure";
+                         rpm1Label.Text = "Failure";
+                         rpm2Label.Text = "Failure";
+                         rpm3Label.Text = "Failure";
+                         rpm4Label.Text = "Failure";
+                         rpm5Label.Text = "Failure";
+                         rpm6Label.Text = "Failure";
+                         speedLabel.Text = "Failure";
+                         accelLabel.Text = "Failure";
+                         mani1Label.Text = "Failure";
+                         mani2Label.Text = "Failure";
+                     });
                     helperC = connected;
                 }
                 else
                 {
                     Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                      {
+                         comSlider.IsEnabled = true;
+                         baudInput.IsEnabled = true;
                          ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
-                         Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
-                         Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         if(controller1)
+                            Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                         else
+                            Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         if(controller2)
+                            Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                         else
+                            Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
                          connectionStatus.Text = "False";
                          comPortId.Text = "N/A";
+                         baudSpeedId.Text = "N/A";
                          voltageLabel.Text = "Failure";
                          rpm1Label.Text = "Failure";
                          rpm2Label.Text = "Failure";
@@ -121,7 +152,11 @@ namespace ROV_GUI
 
         private void UpdatePrivateValues()
         {
-            myCom = "COM" + comSlider.Value;
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                myCom = "COM" + comSlider.Value;
+                baudRate = UInt32.Parse(baudInput.Text);
+            });
         }
 
         private void HorizontalButton_Click(object sender, RoutedEventArgs e)
