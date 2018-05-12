@@ -69,5 +69,6 @@
         <TextBlock HorizontalAlignment="Left" Margin="459,197,0,0" TextWrapping="Wrap" Text="Baud Speed:" VerticalAlignment="Top" />
         <TextBlock x:Name="baudSpeedId" HorizontalAlignment="Left" Margin="558,197,0,0" TextWrapping="Wrap" Text="N/A" VerticalAlignment="Top"/>
         <TextBlock Name="ConnectedControllers" HorizontalAlignment="Left" Margin="436,64,0,-84" Grid.RowSpan="2" Text="Connected- " TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock Name="ControllerTester" HorizontalAlignment="Left" Margin="717,70,0,-90" Grid.RowSpan="2" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top"/>
     </Grid>
 </Page>
