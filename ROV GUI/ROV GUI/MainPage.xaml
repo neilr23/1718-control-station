@@ -65,9 +65,8 @@
         <Image x:Name="ConnectedImg" HorizontalAlignment="Left" Height="95" Margin="700,102,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
         <Image x:Name="Controller1Img" HorizontalAlignment="Left" Height="95" Margin="131,345,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
         <Image x:Name="Controller2Img" HorizontalAlignment="Left" Height="95" Margin="131,543,0,0" VerticalAlignment="Top" Width="95" Source="Assets/Square44x44Logo.png"/>
-        <Button x:Name="ConnectButton" Content="Connect" HorizontalAlignment="Left" Margin="610,92,0,0" VerticalAlignment="Top" Click="ConnectButton_Click"/>
+        <Button x:Name="ConnectButton" Content="Connect" HorizontalAlignment="Left" Margin="610,92,0,0" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="459,197,0,0" TextWrapping="Wrap" Text="Baud Speed:" VerticalAlignment="Top" />
         <TextBlock x:Name="baudSpeedId" HorizontalAlignment="Left" Margin="558,197,0,0" TextWrapping="Wrap" Text="N/A" VerticalAlignment="Top"/>
-        <TextBlock Name="ConnectedControllers" HorizontalAlignment="Left" Margin="436,64,0,-84" Grid.RowSpan="2" Text="Connected- " TextWrapping="Wrap" VerticalAlignment="Top"/>
     </Grid>
 </Page>

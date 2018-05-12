@@ -1,18 +1,30 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media.Imaging;
-using System;
+﻿using System;
+using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Drawing;
+
+using Microsoft.Win32.SafeHandles;
+
 using Windows.Devices.SerialCommunication;
 using Windows.Devices.Enumeration;
 using Windows.Storage.Streams;
 using Windows.Gaming.Input;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml;
+
 using Windows.UI.Core;
-using System.Collections.Generic;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
+
+
 
 
 
@@ -23,7 +35,7 @@ namespace ROV_GUI
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     public sealed partial class MainPage : Page
     {
         //GUI
@@ -78,7 +90,6 @@ namespace ROV_GUI
             //COMMs
             modbusRegisters = new byte[28];
             manipRegisters = new byte[4];
-            ConnectedControllers.Text = RawGameController.RawGameControllers + "";
             Initialize(baudRate, myCom);
         }
         /////////////////////////////////////////////////////////////////////////////GUI interactions
@@ -104,7 +115,7 @@ namespace ROV_GUI
                              Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
                          connectionStatus.Text = "True";
                          comPortId.Text = myCom;
-                         baudSpeedId.Text = ""+baudRate;
+                         baudSpeedId.Text = "" + baudRate;
                          voltageLabel.Text = "Failure";
                          rpm1Label.Text = "Failure";
                          rpm2Label.Text = "Failure";
@@ -126,14 +137,14 @@ namespace ROV_GUI
                          comSlider.IsEnabled = true;
                          baudInput.IsEnabled = true;
                          ConnectedImg.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
-                         if(controller1)
-                            Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                         if (controller1)
+                             Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
                          else
-                            Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
-                         if(controller2)
-                            Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
+                             Controller1Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                         if (controller2)
+                             Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/ps4_controller1.jpg"));
                          else
-                            Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
+                             Controller2Img.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.png"));
                          connectionStatus.Text = "False";
                          comPortId.Text = "N/A";
                          baudSpeedId.Text = "N/A";
@@ -160,7 +171,7 @@ namespace ROV_GUI
             {
                 int num;
                 myCom = "COM" + comSlider.Value;
-                if(int.TryParse(baudInput.Text, out num))
+                if (int.TryParse(baudInput.Text, out num))
                 {
                     baudRate = UInt32.Parse(baudInput.Text);
                 }
@@ -201,16 +212,33 @@ namespace ROV_GUI
         {
             RawGameControllers.Add(args);
         }
-        public static ArrayList RawGameControllers{ get; set; }
-        
-        async private void checkAndSend(object state)//We send things here
+        public static ArrayList RawGameControllers { get; set; }
+
+        private void checkAndSend(object state)//We send things here
         {
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
                 string deploy = "";
                 try
                 {
+<<<<<<< HEAD
                     if (!(RawGameControllers.Count == 0))
+=======
+                    controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
+                    controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
+
+
+                    for (int a = 0; a < buttonOneStates.Length; a++)
+                    {
+                        deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
+                    }
+                    PilotOne.Text = deploy;
+                    if (buttonOneStates[0])
+                    {
+                        //cyka blyAT
+                    }
+                    else if (buttonOneStates[1])
+>>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
                     {
                         controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
                         controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
@@ -321,7 +349,15 @@ namespace ROV_GUI
                         SendBytes(modbusRegisters, manipRegisters);
                     }
                 }
+<<<<<<< HEAD
                 catch (Exception ex)
+=======
+            }
+            catch (Exception ex)
+            {
+                /*connected = false;
+                ContentDialog failedtoConnectControllersDialog = new ContentDialog
+>>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
                 {
                     connected = false;
                     ContentDialog failedtoConnectControllersDialog = new ContentDialog
@@ -331,12 +367,17 @@ namespace ROV_GUI
                         CloseButtonText = "Ok"
                     };
 
+<<<<<<< HEAD
                     //ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();
                 }
             });
+=======
+                ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();*/
+            }
+>>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
         }
 
-        
+
         public async Task Initialize(uint BaudRate, String myCom)     //NOTE - THIS IS AN ASYNC METHOD!
         {
             try
@@ -458,11 +499,6 @@ namespace ROV_GUI
 
                 ContentDialogResult result = await failedtoSendDialog.ShowAsync();
             }
-        }
-
-        private void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            Initialize(baudRate, myCom);
         }
     }
 }
