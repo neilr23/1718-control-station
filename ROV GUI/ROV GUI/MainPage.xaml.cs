@@ -247,7 +247,7 @@ namespace ROV_GUI
                             deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
                         }
                         PilotOne.Text = deploy;
-                        if (buttonOneStates[0])
+                        /*if (buttonOneStates[0])
                         {
                             //cyka blyAT
                         }
@@ -342,9 +342,25 @@ namespace ROV_GUI
                         else if (buttonTwoStates[11])
                         {
 
-                        }
+                        }*/
                         //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
                         //See the arduino code for explanations of what each place in modbusRegisters represents. 
+                        if (W.KeyDown())
+                        {
+                            //GO FORWARDS
+                        }
+                        else if (A.KeyDown())
+                        {
+                            //Turn left
+                        }
+                        else if (S.KeyDown())
+                        {
+                            //GO BACK
+                        }
+                        else if (D.KeyDown())
+                        {
+                            //Turn right
+                        }
                         SendBytes(modbusRegisters, manipRegisters);
                     }
                 }
