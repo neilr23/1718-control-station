@@ -221,11 +221,8 @@ namespace ROV_GUI
             {
                 if (!(RawGameControllers.Count == 0))
                 {
-<<<<<<< HEAD
-<<<<<<< HEAD
                     if (!(RawGameControllers.Count == 0))
-=======
-                    controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
+                        controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
                     controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
 
 
@@ -239,156 +236,131 @@ namespace ROV_GUI
                         //cyka blyAT
                     }
                     else if (buttonOneStates[1])
->>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
                     {
                         controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
                         controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
-=======
-                    controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
-                    controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
->>>>>>> parent of 7c1cf38... this sh*t works
+                        controllers[0].GetCurrentReading(buttonOneStates, null, axisOneStates);
+                        controllers[1].GetCurrentReading(buttonTwoStates, null, axisTwoStates);
 
-                    for (int a = 0; a < buttonOneStates.Length; a++)
-                    {
-                        deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
-                    }
-                    PilotOne.Text = deploy;
-                    if (buttonOneStates[0])
-                    {
-                        //cyka blyAT
-                    }
-                    else if (buttonOneStates[1])
-                    {
+                        for (int a = 0; a < buttonOneStates.Length; a++)
+                        {
+                            deploy += "Button " + a + ": " + buttonOneStates[a] + " |";
+                        }
+                        PilotOne.Text = deploy;
+                        if (buttonOneStates[0])
+                        {
+                            //cyka blyAT
+                        }
+                        else if (buttonOneStates[1])
+                        {
 
-                    }
-                    else if (buttonOneStates[2])
-                    {
+                        }
+                        else if (buttonOneStates[2])
+                        {
 
-                    }
-                    else if (buttonOneStates[3])
-                    {
+                        }
+                        else if (buttonOneStates[3])
+                        {
 
-                    }
-                    else if (buttonOneStates[4])
-                    {
+                        }
+                        else if (buttonOneStates[4])
+                        {
 
-                    }
-                    else if (buttonOneStates[5])
-                    {
+                        }
+                        else if (buttonOneStates[5])
+                        {
 
-                    }
-                    else if (buttonOneStates[6])
-                    {
+                        }
+                        else if (buttonOneStates[6])
+                        {
 
-                    }
-                    else if (buttonOneStates[7])
-                    {
+                        }
+                        else if (buttonOneStates[7])
+                        {
 
-                    }
-                    else if (buttonOneStates[8])
-                    {
+                        }
+                        else if (buttonOneStates[8])
+                        {
 
-                    }
-                    else if (buttonOneStates[9])
-                    {
+                        }
+                        else if (buttonOneStates[9])
+                        {
 
-                    }
-                    else if (buttonOneStates[10])
-                    {
+                        }
+                        else if (buttonOneStates[10])
+                        {
 
-                    }
-                    else if (buttonOneStates[11])
-                    {
+                        }
+                        else if (buttonOneStates[11])
+                        {
 
-                    }
-                    if (buttonTwoStates[0])
-                    {
+                        }
+                        if (buttonTwoStates[0])
+                        {
 
-                    }
-                    else if (buttonTwoStates[1])
-                    {
+                        }
+                        else if (buttonTwoStates[1])
+                        {
 
-                    }
-                    else if (buttonTwoStates[2])
-                    {
+                        }
+                        else if (buttonTwoStates[2])
+                        {
 
-                    }
-                    else if (buttonTwoStates[3])
-                    {
+                        }
+                        else if (buttonTwoStates[3])
+                        {
 
-                    }
-                    else if (buttonTwoStates[4])
-                    {
+                        }
+                        else if (buttonTwoStates[4])
+                        {
 
-                    }
-                    else if (buttonTwoStates[5])
-                    {
+                        }
+                        else if (buttonTwoStates[5])
+                        {
 
-                    }
-                    else if (buttonTwoStates[6])
-                    {
+                        }
+                        else if (buttonTwoStates[6])
+                        {
 
-                    }
-                    else if (buttonTwoStates[7])
-                    {
+                        }
+                        else if (buttonTwoStates[7])
+                        {
 
-                    }
-                    else if (buttonTwoStates[8])
-                    {
+                        }
+                        else if (buttonTwoStates[8])
+                        {
 
-                    }
-                    else if (buttonTwoStates[9])
-                    {
+                        }
+                        else if (buttonTwoStates[9])
+                        {
 
-                    }
-                    else if (buttonTwoStates[10])
-                    {
+                        }
+                        else if (buttonTwoStates[10])
+                        {
 
-                    }
-                    else if (buttonTwoStates[11])
-                    {
+                        }
+                        else if (buttonTwoStates[11])
+                        {
 
+                        }
+                        //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
+                        //See the arduino code for explanations of what each place in modbusRegisters represents. 
+                        SendBytes(modbusRegisters, manipRegisters);
                     }
-                    //a whole shit ton of if statements of what happens when buttons are pressed, put results into modbusRegisters and manipRegisters
-                    //See the arduino code for explanations of what each place in modbusRegisters represents. 
-                    SendBytes(modbusRegisters, manipRegisters);
                 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-                catch (Exception ex)
-=======
-            }
-            catch (Exception ex)
-            {
-                /*connected = false;
-                ContentDialog failedtoConnectControllersDialog = new ContentDialog
->>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
-=======
             }
             catch (Exception ex)
             {
                 connected = false;
                 ContentDialog failedtoConnectControllersDialog = new ContentDialog
->>>>>>> parent of 7c1cf38... this sh*t works
                 {
                     Title = "Boi where are the controllers?",
                     Content = ex.ToString(),
                     CloseButtonText = "OH SUGAR"
                 };
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    //ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();
-                }
-            });
-=======
-                ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();*/
+                //ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();
             }
->>>>>>> b72accc5a87b4d8d9d8bcdcad12e6c024294e2a5
-=======
                 ContentDialogResult result = await failedtoConnectControllersDialog.ShowAsync();
-            }
->>>>>>> parent of 7c1cf38... this sh*t works
         }
 
 
