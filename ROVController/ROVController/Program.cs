@@ -17,11 +17,12 @@ namespace ROVController
             /*Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());*/
+            ROV rov = null;
             try {
-                ROV rov = new ROV("COM1", 250000, 10);
+                rov = new ROV("COM1", 250000, 100);
             } catch(Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message);
             }
             while (true) ;
         }

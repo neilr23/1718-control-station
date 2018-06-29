@@ -2,12 +2,14 @@
 using System.Timers;
 using System.IO.Ports;
 using Modbus.Device;
+using System.Diagnostics;
 
 namespace ROVController
 {
     public class ROV
     {
         private bool isConnected;
+        private bool communicationWatchdog;
         private SerialPort serialPort;
         private IModbusSerialMaster modbus;
         private ushort[] registers;
@@ -22,6 +24,25 @@ namespace ROVController
 
         public ROV(string portName, int baudRate, int updateInterval)
         {
+            //connect to ROV computer
+            try
+            {
+                serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
+                serialPort.Open();
+                modbus = ModbusSerialMaster.CreateRtu(serialPort);
+                isConnected = true;
+            } catch(Exception e)
+            {
+                throw new Exception("Failed to start communication: " + e.Message);
+            }
+
+            registers = new ushort[29];
+            for (int i = 0; i < 29; i++)
+            {
+                //set all to max value to indicate not operational
+                registers[i] = 0;
+            }
+
             //set up thrusters, avionics, manipulator objects with
             //specific indices in register array
             Thrusters = new Thruster[6];
@@ -33,7 +54,7 @@ namespace ROVController
             Avionics = new Avionics(registers, 6, 7, 8, 9);
 
             Manipulators = new ROVOutput[4];
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 Manipulators[i] = new ROVOutput(registers, 10 + i, -255, 255);
             }
@@ -41,24 +62,6 @@ namespace ROVController
             Relays = new ROVOutput(registers, 14, UInt16.MinValue, UInt16.MaxValue);
 
             Voltmeter = new ROVInput(registers, 15, 0, 30);
-
-            //connect to ROV computer
-            try
-            {
-                serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
-                serialPort.Open();
-                modbus = ModbusSerialMaster.CreateRtu(serialPort);
-            } catch(Exception e)
-            {
-                throw new Exception("Failed to start communication: " + e.Message);
-            }
-
-            registers = new ushort[29];
-            for (int i = 0; i < 29; i++)
-            {
-                //set all to max value to indicate not operational
-                registers[i] = UInt16.MaxValue;
-            }
 
             //every x milliseconds send/receive data with ROV
             timer = new Timer(updateInterval);
@@ -68,11 +71,36 @@ namespace ROVController
             loopCounter = 0;
         }
 
+        public bool IsConnected { get { return isConnected; } }
+
+        public void Reconnect()
+        {
+            if(!serialPort.IsOpen)
+            {
+                try
+                {
+                    serialPort.Open();
+                    isConnected = true;
+                    communicationWatchdog = false;
+                } catch { }
+            }
+        }
+
         //runs 100Hz
         private void CommunicationTimerElapsed(object o, ElapsedEventArgs ea)
         {
-            if (serialPort.IsOpen && isConnected)
+            if (serialPort.IsOpen)
             {
+                if(communicationWatchdog)
+                {
+                    isConnected = false;
+                    for(int i = 0; i < registers.Length; i++)
+                    {
+                        //set registers so that all instruments show failure
+                        registers[i] = 0;
+                    }
+                }
+                communicationWatchdog = true;
                 loopCounter++;
                 if (loopCounter >= 10)
                 {
@@ -80,6 +108,10 @@ namespace ROVController
                     loopCounter = 0;
                 }
                 HighPriorityCommunication();
+                communicationWatchdog = false;
+            } else
+            {
+                Reconnect();
             }
         }
 
@@ -109,16 +141,29 @@ namespace ROVController
             {
                 subset[i] = registers[start + i];
             }
-            modbus.WriteMultipleRegisters(1, (ushort)start, subset);
+            if (serialPort.IsOpen && isConnected)
+            {
+                try
+                {
+                    modbus.WriteMultipleRegisters(1, (ushort)start, subset);
+                }
+                catch { isConnected = false; }
+            }
         }
 
         //reads subset of ROV's register array and adds it to surface register array
         private void ReadRegisters(int start, int n)
         {
-            ushort[] subset = modbus.ReadHoldingRegisters(1, (ushort)start, (ushort)n);
-            for (int i = 0; i < n; i++)
-            {
-                registers[start + i] = subset[i];
+            if (serialPort.IsOpen && isConnected) {
+                try
+                {
+                    ushort[] subset = modbus.ReadHoldingRegisters(1, (ushort)start, (ushort)n);
+                    for (int i = 0; i < n; i++)
+                    {
+                        registers[start + i] = subset[i];
+                    }
+                }
+                catch { isConnected = false; }
             }
         }
 
@@ -239,7 +284,7 @@ namespace ROVController
         {
             get
             {
-                return registers[registerIndex] == UInt16.MaxValue;
+                return registers[registerIndex] != 0;
             }
         }
     }
