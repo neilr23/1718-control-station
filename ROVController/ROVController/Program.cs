@@ -18,7 +18,7 @@ namespace ROVController
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());*/
             try {
-                ROV rov = new ROV("COM1", 250000, 100);
+                ROV rov = new ROV("COM1", 250000, 10);
             } catch(Exception e)
             {
                 MessageBox.Show(e.ToString());

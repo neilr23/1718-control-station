@@ -43,79 +43,66 @@ namespace ROVController
             Voltmeter = new ROVInput(registers, 15, 0, 30);
 
             //connect to ROV computer
-            serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
-            serialPort.Open();
-            modbus = ModbusSerialMaster.CreateRtu(serialPort);
-            //(if no exceptions occur)
-            isConnected = true;
+            try
+            {
+                serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
+                serialPort.Open();
+                modbus = ModbusSerialMaster.CreateRtu(serialPort);
+            } catch(Exception e)
+            {
+                throw new Exception("Failed to start communication: " + e.Message);
+            }
+
             registers = new ushort[29];
             for (int i = 0; i < 29; i++)
             {
-                registers[i] = 0;
+                //set all to max value to indicate not operational
+                registers[i] = UInt16.MaxValue;
             }
 
             //every x milliseconds send/receive data with ROV
             timer = new Timer(updateInterval);
             timer.AutoReset = true;
-            timer.Elapsed += communicationTimerElapsed;
+            timer.Elapsed += CommunicationTimerElapsed;
             timer.Start();
             loopCounter = 0;
         }
 
         //runs 100Hz
-        private void communicationTimerElapsed(object o, ElapsedEventArgs ea)
+        private void CommunicationTimerElapsed(object o, ElapsedEventArgs ea)
         {
-            loopCounter++;
-            if (loopCounter >= 10)
+            if (serialPort.IsOpen && isConnected)
             {
-                lowPriorityCommunication();
-                loopCounter = 0;
+                loopCounter++;
+                if (loopCounter >= 10)
+                {
+                    LowPriorityCommunication();
+                    loopCounter = 0;
+                }
+                HighPriorityCommunication();
             }
-            highPriorityCommunication();
         }
 
         //also runs 100Hz
-        private void highPriorityCommunication()
+        private void HighPriorityCommunication()
         {
-            //put speed numbers from thruster objects in modbus registers
-            for (int i = 0; i < 6; i++)
-            {
-                Thrusters[i].update(registers);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                Manipulators[i].update(registers);
-            }
-            //send thruster and manipulator values
-            writeRegisters(0, 8);
-            //get voltage, avionics data into registers
-            readRegisters(8, 5);
-            //update objects with those register values
-            Avionics.update(registers);
-            volt.update(registers);
+            //send thruster values
+            WriteRegisters(0, 6);
+            //get avionics data
+            ReadRegisters(6, 4);
         }
 
         //runs 10Hz
-        private void lowPriorityCommunication()
+        private void LowPriorityCommunication()
         {
-            //get relay states from objects into registers
-            for (int i = 0; i < 2; i++)
-            {
-                relays[i].update(registers);
-            }
-            //send booleans for relays, lights
-            writeRegisters(13, 1);
+            //send booleans for relays, lights, manipulators
+            WriteRegisters(10, 5);
             //read thruster rpm, temp, ROV status and error codes
-            readRegisters(14, 15);
-            //put this data into objects from registers
-            for (int i = 0; i < 6; i++)
-            {
-                Thrusters[i].update(registers);
-            }
+            ReadRegisters(15, 14);
         }
 
         //takes subset of surface register array and writes it to ROV register array
-        private void writeRegisters(int start, int n)
+        private void WriteRegisters(int start, int n)
         {
             ushort[] subset = new ushort[n];
             for (int i = 0; i < n; i++)
@@ -126,29 +113,12 @@ namespace ROVController
         }
 
         //reads subset of ROV's register array and adds it to surface register array
-        private void readRegisters(int start, int n)
+        private void ReadRegisters(int start, int n)
         {
             ushort[] subset = modbus.ReadHoldingRegisters(1, (ushort)start, (ushort)n);
             for (int i = 0; i < n; i++)
             {
                 registers[start + i] = subset[i];
-            }
-        }
-
-        public bool Connected
-        {
-            get { return isConnected; }
-            set
-            {
-                if (value)
-                {
-                    serialPort.Open();
-                }
-                else
-                {
-                    serialPort.Close();
-                }
-                isConnected = value;
             }
         }
 
@@ -242,7 +212,7 @@ namespace ROVController
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new Exception("Value is out of range");
                 }
             }
         }
