@@ -9,3 +9,4 @@ C:\Users\Henry\source\repos\ROVController\ROVController\obj\Debug\ROVController.
 C:\Users\Henry\source\repos\ROVController\ROVController\bin\Debug\NModbus4.dll
 C:\Users\Henry\source\repos\ROVController\ROVController\bin\Debug\NModbus4.xml
 C:\Users\Henry\source\repos\ROVController\ROVController\obj\Debug\ROVController.csproj.CopyComplete
+C:\Users\Henry\source\repos\ROVController\ROVController\obj\Debug\ROVController.csprojAssemblyReference.cache

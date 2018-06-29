@@ -14,36 +14,33 @@ namespace ROVController
 
         private Timer timer;
         private int loopCounter;
-        private Thruster[] thrusters;
-        private Avionics avionics;
-        private Manipulator[] manipulators;
-        private Relay[] relays;
-        private VoltageSensor volt;
+        public Thruster[] Thrusters;
+        public Avionics Avionics;
+        public ROVOutput[] Manipulators;
+        public ROVInput Voltmeter;
+        public ROVOutput Relays;
 
         public ROV(string portName, int baudRate, int updateInterval)
         {
             //set up thrusters, avionics, manipulator objects with
             //specific indices in register array
-            thrusters = new Thruster[6];
+            Thrusters = new Thruster[6];
             for (int i = 0; i < 6; i++)
             {
-                thrusters[i] = new Thruster(14 + i, 20 + i, i);
+                Thrusters[i] = new Thruster(registers, i, 16 + i, 22 + i);
             }
 
-            avionics = new Avionics(9, 12);
+            Avionics = new Avionics(registers, 6, 7, 8, 9);
 
-            manipulators = new Manipulator[4];
-            manipulators[0] = new Manipulator(6, false);
-            manipulators[1] = new Manipulator(6, true);
-            manipulators[2] = new Manipulator(7, false);
-            manipulators[3] = new Manipulator(7, true);
+            Manipulators = new ROVOutput[4];
+            for(int i = 0; i < 4; i++)
+            {
+                Manipulators[i] = new ROVOutput(registers, 10 + i, -255, 255);
+            }
 
-            relays = new Relay[3];
-            relays[0] = new Relay(13, 0);
-            relays[1] = new Relay(13, 1);
-            relays[2] = new Relay(13, 2);
+            Relays = new ROVOutput(registers, 14, UInt16.MinValue, UInt16.MaxValue);
 
-            volt = new VoltageSensor(8);
+            Voltmeter = new ROVInput(registers, 15, 0, 30);
 
             //connect to ROV computer
             serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
@@ -83,18 +80,18 @@ namespace ROVController
             //put speed numbers from thruster objects in modbus registers
             for (int i = 0; i < 6; i++)
             {
-                thrusters[i].update(registers);
+                Thrusters[i].update(registers);
             }
             for (int i = 0; i < 4; i++)
             {
-                manipulators[i].update(registers);
+                Manipulators[i].update(registers);
             }
             //send thruster and manipulator values
             writeRegisters(0, 8);
             //get voltage, avionics data into registers
             readRegisters(8, 5);
             //update objects with those register values
-            avionics.update(registers);
+            Avionics.update(registers);
             volt.update(registers);
         }
 
@@ -113,7 +110,7 @@ namespace ROVController
             //put this data into objects from registers
             for (int i = 0; i < 6; i++)
             {
-                thrusters[i].update(registers);
+                Thrusters[i].update(registers);
             }
         }
 
@@ -155,12 +152,12 @@ namespace ROVController
             }
         }
 
-        public byte getLastCommunicationError()
+        private byte GetLastCommunicationError()
         {
             return (byte)(registers[28] >> 8);
         }
 
-        public string getLastCommunicationErrorString()
+        public string GetLastCommunicationErrorString()
         {
             /*From ModbusRtu.h, getLastError() returns the following values:
             ERR_NOT_MASTER = -1,
@@ -168,7 +165,7 @@ namespace ROVController
             ERR_BUFF_OVERFLOW = -3,
             ERR_BAD_CRC = -4,
             ERR_EXCEPTION = -5*/
-            switch ((int)getLastCommunicationError())
+            switch ((int)GetLastCommunicationError())
             {
                 case 0:
                     return "0: No Error";
@@ -183,174 +180,116 @@ namespace ROVController
                 case -5:
                     return "-5: Communication exception";
                 default:
-                    return getLastCommunicationError() + ": Unknown error";
+                    return GetLastCommunicationError() + ": Unknown error";
             }
         }
 
-        public byte getCommunicationErrorCount()
+        public byte GetCommunicationErrorCount()
         {
             return (byte)registers[28];
-        }
-
-        public ushort getROVError()
-        {
-            return registers[27];
-        }
-
-        public string getROVErrorString()
-        {
-            switch(getROVError())
-            {
-                case 0:
-                    return "0: No error";
-                case 1:
-                    return "1: Not connecting to IMU";
-                case 2:
-                    return "2: Not connecting to depth sensor";
-                case 3:
-                    return "3: Unable to connect to ESC";
-                default:
-                    return getROVError() + ": Unknown error";
-            }
         }
     }
     public class Thruster
     {
-        private int rpm = 0;
-        private double temperature = 0;
-        private int speed = 0;
-        private int rpmAddr, tempAddr, speedAddr;
-        public Thruster(int rpmAddr, int tempAddr, int speedAddr)
+        public ROVOutput Speed;
+        public ROVInput Tachometer, Thermometer;
+        public Thruster(ushort[] registers, int speedAddr, int rpmAddr, int tempAddr)
         {
-            this.rpmAddr = rpmAddr;
-            this.tempAddr = tempAddr;
-            this.speedAddr = speedAddr;
+            Speed = new ROVOutput(registers, speedAddr, Int16.MinValue, Int16.MaxValue);
+            Tachometer = new ROVInput(registers, rpmAddr, UInt16.MinValue, UInt16.MaxValue);
+            Thermometer = new ROVInput(registers, tempAddr, 0, 100);
         }
-        public void update(ushort[] registers)
-        {
-            rpm = registers[rpmAddr];
-            temperature = registers[tempAddr] / 10.0;
-            registers[speedAddr] = (ushort)speed;
-        }
-        public int RPM { get { return rpm; } }
-        public double Temperature { get { return temperature; } }
-        public int Speed
-        {
-            get
-            {
-                return speed;
-            }
-            set
-            {
-                if (value < Int16.MinValue || value > Int16.MaxValue)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-                speed = value;
-            }
-        }
-        public bool Operational { get { return temperature != 0; } } //temperature set to 0 for ESC with lost connection
-        public bool Active { get { return speed != 0; } }
-        public bool Overheated { get { return temperature > 40.0; } }
+        public bool OverRPM { get { return Tachometer.Value > 1000; } } //over 1000 RPM
+        public bool OverTemp { get { return Thermometer.Value > 50; } } //over 50 degC or 122 degF
+        public bool IsAlive { get { return Thermometer.IsAlive && Tachometer.IsAlive; } }
     }
     public class Avionics
     {
-        //yaw, pitch, and roll of ROV (degrees)
-        private double[] ypr = { 0, 0, 0 };
-        //depth (meters below surface)
-        private double depth = 0.0;
-        private int yprAddr, depthAddr;
-        public Avionics(int yprAddr, int depthAddr)
+        public ROVInput Yaw, Pitch, Roll, Depth;
+        public Avionics(ushort[] registers, int yawAddr, int pitchAddr, int rollAddr, int depthAddr)
         {
-            this.yprAddr = yprAddr;
-            this.depthAddr = depthAddr;
+            Yaw = new ROVInput(registers, yawAddr, -Math.PI, Math.PI);
+            Pitch = new ROVInput(registers, pitchAddr, -Math.PI, Math.PI);
+            Roll = new ROVInput(registers, rollAddr, -Math.PI, Math.PI);
+            Depth = new ROVInput(registers, depthAddr, 0, 25);
         }
-        public void update(ushort[] registers)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                ypr[i] = (registers[yprAddr + i] * 360.0 / 65535.0) - 180.0; //map 0<>65535 to -180<>180
-            }
-            depth = registers[depthAddr];
-        }
-        public double Yaw { get { return ypr[0]; } }
-        public double Pitch { get { return ypr[1]; } }
-        public double Roll { get { return ypr[2]; } }
-        public double Depth { get { return depth; } }
+        public bool IMUAlive { get { return Yaw.IsAlive && Pitch.IsAlive && Roll.IsAlive; } }
     }
-    public class Manipulator
+    public class ROVOutput
     {
-        private int speed = 0;
-        private int speedAddr;
-        private bool highByte;
-        public Manipulator(int speedAddr, bool highByte)
+        private double outputValue;
+        private LinearMapping mapping;
+        private int registerIndex;
+        private ushort[] registers;
+        public ROVOutput(ushort[] registers, int registerIndex, double fromMin, double fromMax)
         {
-            this.speedAddr = speedAddr;
-            this.highByte = highByte;
+            mapping = new LinearMapping(fromMin, fromMax, UInt16.MinValue, UInt16.MaxValue);
+            this.registerIndex = registerIndex;
+            this.registers = registers;
         }
-        public void update(ushort[] registers)
-        {
-            if (highByte)
-            {
-                registers[speedAddr] = (ushort)((ushort)(speed) << 8);
-            }
-            else
-            {
-                registers[speedAddr] = (ushort)speed;
-            }
-        }
-        public int Speed
+        public double Value
         {
             get
             {
-                return speed;
+                return outputValue;
             }
             set
             {
-                if (speed < SByte.MinValue || speed > SByte.MaxValue)
+                if (mapping.InRange(value))
+                {
+                    outputValue = value;
+                    registers[registerIndex] = (ushort)mapping.Map(value);
+                }
+                else
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                speed = value;
             }
         }
-        public bool Active { get { return speed != 0; } }
     }
-    public class Relay
+    public class ROVInput
     {
-        private bool state;
-        private int stateAddr;
-        private int stateBitAddr;
-        public Relay(int stateAddr, int stateBitAddr)
+        private LinearMapping mapping;
+        private int registerIndex;
+        private ushort[] registers;
+        public ROVInput(ushort[] registers, int registerIndex, double toMin, double toMax)
         {
-            this.stateAddr = stateAddr;
-            this.stateBitAddr = stateBitAddr;
+            mapping = new LinearMapping(UInt16.MinValue, UInt16.MaxValue, toMin, toMax);
+            this.registerIndex = registerIndex;
+            this.registers = registers;
         }
-        public void update(ushort[] registers)
+        public double Value
         {
-            if (state)
+            get
             {
-                registers[stateAddr] |= (ushort)(1 << stateBitAddr);
-            }
-            else
-            {
-                registers[stateAddr] &= (ushort)~(1 << stateBitAddr);
+                return mapping.Map(registers[registerIndex]);
             }
         }
-        public bool State { get { return state; } set { state = value; } }
+        public bool IsAlive
+        {
+            get
+            {
+                return registers[registerIndex] == UInt16.MaxValue;
+            }
+        }
     }
-    public class VoltageSensor
+    public class LinearMapping
     {
-        private double voltage;
-        private int voltAddr;
-        public VoltageSensor(int voltAddr)
+        private double fromMin, fromMax, toMin, toMax;
+        public LinearMapping(double fromMin, double fromMax, double toMin, double toMax)
         {
-            this.voltAddr = voltAddr;
+            this.fromMin = fromMin;
+            this.fromMax = fromMax;
+            this.toMin = toMin;
+            this.toMax = toMax;
         }
-        public void update(ushort[] registers)
+        public double Map(double from)
         {
-            voltage = registers[voltAddr] * 5.0 / 1023 * 5.7; //5v per 1023 ADC ticks and a 10k/47k voltage divider
+            return (from - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
         }
-        public double Voltage { get { return voltage; } }
+        public bool InRange(double from)
+        {
+            return from >= fromMin && from <= fromMax;
+        }
     }
 }
